@@ -7,7 +7,7 @@ import random, time
 pygame.init()
 
 #Setting up FPS 
-FPS = 120
+FPS = 60
 FramePerSec = pygame.time.Clock()
 
 #Creating colors
@@ -24,11 +24,11 @@ SPEED = 5
 SCORE = 0
 
 #Setting up Fonts
-font = pygame.font.SysFont("Verdana", 60)
-font_small = pygame.font.SysFont("Verdana", 20)
+font = pygame.font.SysFont("symbol", 60)
+font_small = pygame.font.SysFont("symbol", 20)
 game_over = font.render("Game Over", True, BLACK)
 
-background = pygame.image.load("AnimatedStreet.png")
+background = pygame.image.load("AnimatedStreet1.png")
 
 #Create a white screen 
 DISPLAYSURF = pygame.display.set_mode((400,600))
@@ -39,7 +39,7 @@ pygame.display.set_caption("Game")
 class Enemy(pygame.sprite.Sprite):
       def __init__(self):
         super().__init__() 
-        self.image = pygame.image.load("Enemy.png")
+        self.image = pygame.image.load("shrek.png")
         self.rect = self.image.get_rect()
         self.rect.center = (random.randint(40,SCREEN_WIDTH-40), 0)
 
@@ -49,7 +49,8 @@ class Enemy(pygame.sprite.Sprite):
         if (self.rect.bottom > 600):
             SCORE += 1
             self.rect.top = 0
-            self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
+            self.rect.center = (P1.rect.x
+            , 0)
 
 
 class Player(pygame.sprite.Sprite):
@@ -64,10 +65,10 @@ class Player(pygame.sprite.Sprite):
         
         if self.rect.left > 0:
               if pressed_keys[K_LEFT]:
-                  self.rect.move_ip(-5, 0)
+                  self.rect.move_ip(-10, 0)
         if self.rect.right < SCREEN_WIDTH:        
               if pressed_keys[K_RIGHT]:
-                  self.rect.move_ip(5, 0)
+                  self.rect.move_ip(10, 0)
                   
 
 #Setting up Sprites        
