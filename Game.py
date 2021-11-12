@@ -1,40 +1,31 @@
-#Imports
 import pygame, sys
 from pygame.locals import *
 import random, time
-
-#Initialzing 
+ 
 pygame.init()
 
-#Setting up FPS 
 FPS = 60
 FramePerSec = pygame.time.Clock()
 
-#Creating colors
 BLUE  = (0, 0, 255)
-RED   = (255, 0, 0)
+NOT_RED   = (25, 175, 194)
 GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
-#Other Variables for use in the program
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
 SPEED = 5
 SCORE = 0
 
-#Setting up Fonts
-font = pygame.font.SysFont("symbol", 60)
+font = pygame.font.SysFont("symbol", 30)
 font_small = pygame.font.SysFont("symbol", 20)
-game_over = font.render("Game Over", True, BLACK)
 
 background = pygame.image.load("AnimatedStreet1.png")
 
-#Create a white screen 
 DISPLAYSURF = pygame.display.set_mode((400,600))
 DISPLAYSURF.fill(WHITE)
 pygame.display.set_caption("Game")
-
 
 class Enemy(pygame.sprite.Sprite):
       def __init__(self):
@@ -49,9 +40,7 @@ class Enemy(pygame.sprite.Sprite):
         if (self.rect.bottom > 600):
             SCORE += 1
             self.rect.top = 0
-            self.rect.center = (P1.rect.x
-            , 0)
-
+            self.rect.center = (player.rect.x, 0)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -63,57 +52,57 @@ class Player(pygame.sprite.Sprite):
     def move(self):
         pressed_keys = pygame.key.get_pressed()
         
-        if self.rect.left > 0:
-              if pressed_keys[K_LEFT]:
-                  self.rect.move_ip(-10, 0)
-        if self.rect.right < SCREEN_WIDTH:        
-              if pressed_keys[K_RIGHT]:
-                  self.rect.move_ip(10, 0)
-                  
+        if pressed_keys[K_LEFT]:
+            if self.rect.left <= 0:
+                self.rect.right = 390
+            else:
+                self.rect.move_ip(-10, 0)
+        
+        if pressed_keys[K_RIGHT]:
+            if self.rect.right >= 400:
+                self.rect.left = 10
+            else:
+                self.rect.move_ip(10, 0)
 
-#Setting up Sprites        
-P1 = Player()
+
+        
+                  
+player = Player()
 E1 = Enemy()
 
-#Creating Sprites Groups
 enemies = pygame.sprite.Group()
 enemies.add(E1)
 all_sprites = pygame.sprite.Group()
-all_sprites.add(P1)
+all_sprites.add(player)
 all_sprites.add(E1)
 
-#Adding a new User event 
 INC_SPEED = pygame.USEREVENT + 1
 pygame.time.set_timer(INC_SPEED, 1000)
 
-#Game Loop
 while True:
       
-    #Cycles through all events occuring  
     for event in pygame.event.get():
         if event.type == INC_SPEED:
-              SPEED += 0.5      
+              SPEED += 1     
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
-
 
     DISPLAYSURF.blit(background, (0,0))
     scores = font_small.render(str(SCORE), True, BLACK)
     DISPLAYSURF.blit(scores, (10,10))
 
-    #Moves and Re-draws all Sprites
     for entity in all_sprites:
         entity.move()
         DISPLAYSURF.blit(entity.image, entity.rect)
         
+    game_over = font.render(f"Game Over your score: {SCORE}", True, BLACK)
 
-    #To be run if collision occurs between Player and Enemy
-    if pygame.sprite.spritecollideany(P1, enemies):
+    if pygame.sprite.spritecollideany(player, enemies):
           pygame.mixer.Sound('crash.wav').play()
           time.sleep(1)
                    
-          DISPLAYSURF.fill(RED)
+          DISPLAYSURF.fill(NOT_RED)
           DISPLAYSURF.blit(game_over, (30,250))
           
           pygame.display.update()
